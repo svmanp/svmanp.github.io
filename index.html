@@ -342,6 +342,178 @@
         
           
             <h3 id="Abtract"><a href="#Abtract" class="headerlink" title="Abtract"></a>Abtract</h3><p>CaffeOnSpark is a open source deep learning framework. This install CaffeOnSpark on Ubuntu tutorial explains about how to install and configure CaffeOnSpark on Ubuntu. In this turorial, I will step by step guide you on how to install Caffe prerequisites, Java, Hadoop 2.7.1, Spark, Caffe and CaffeOnSpark on Ubuntu. This quick start will help you to install those tools on ubuntu, configure and run it in lease than 30 minutes. After installation, you can training your model by distribute deep learing framework. </p>
+<h2 id="1-Prerequisites"><a href="#1-Prerequisites" class="headerlink" title="1. Prerequisites"></a>1. Prerequisites</h2><p>To follow this tutorial, you will need:</p>
+<ul>
+<li>One Ubuntu 16.04.</li>
+</ul>
+<h2 id="2-Install-Java-on-Ubuntu-16-04"><a href="#2-Install-Java-on-Ubuntu-16-04" class="headerlink" title="2. Install Java on Ubuntu 16.04"></a>2. Install Java on Ubuntu 16.04</h2><p><strong>2.1. Add Repository</strong></p>
+<p>First, add Oracle’s repository, then update your package repository.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo add-apt-repository ppa:webupd8team/java</span><br><span class="line">$ sudo apt-get update</span><br></pre></td></tr></table></figure>
+<p><strong>2.2. Install Oracle JDK 8</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install oracle-java8-installer</span><br></pre></td></tr></table></figure>
+<p><strong>2.3. Setting the JAVA_HOME Environment Variable</strong></p>
+<p>To set this environment variable, we will first need to find out where Java is installed. You can do this by executing the following command :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo update-alternatives --config java</span><br></pre></td></tr></table></figure>
+<p>Copy the path from your preferred installation and then open <code>/etc/environment</code> using <code>vim</code> or your favorite text editor.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vim /etc/environment</span><br></pre></td></tr></table></figure>
+<p>At the end of this file, add the following line, making sure to replace the highlighted path with your own copied path.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ JAVA_HOME=&quot;/usr/lib/jvm/java-8-oracle&quot;</span><br></pre></td></tr></table></figure>
+<p>Save and exit the file, and reload it.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source /etc/environment</span><br></pre></td></tr></table></figure>
+<p>You can now test whether the environment variable has been set by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo $JAVA_HOME</span><br></pre></td></tr></table></figure>
+<p>You also can test the java by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ java -version</span><br></pre></td></tr></table></figure>
+<p><strong>2.4. Seetup password-less SSH</strong></p>
+<p>Install open SSH Server &amp; Client</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openssh-server openssh-client</span><br></pre></td></tr></table></figure>
+<p>Generate public and private key pairs</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -P &quot;&quot;</span><br></pre></td></tr></table></figure>
+<p>Configure password-less SSH</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cat $HOME/.ssh/id_rsa.pub &gt;&gt; $HOME/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+<p>Check by SSH to <code>localhost</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh localhost</span><br></pre></td></tr></table></figure>
+<h1 id="3-Install-Hadoop-2-7-1-on-Ubuntu"><a href="#3-Install-Hadoop-2-7-1-on-Ubuntu" class="headerlink" title="3. Install Hadoop 2.7.1 on Ubuntu"></a>3. Install Hadoop 2.7.1 on Ubuntu</h1><p>The Hadoop 2.7.1 source code can be downloaded form <a href="https://archive.apache.org/dist/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz" target="_blank" rel="noopener">Hadoop Website</a>. <code>Untar</code> the hadoop source code by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ tar xzf hadoop-2.7.1.tar.gz</span><br></pre></td></tr></table></figure>
+<p><strong>3.1 Edit .bashrc file</strong></p>
+<p><code>.bashrc</code> file located in user’s home directory and add folllowing parameters at the end:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_PREFIX=$HOME/hadoop-2.7.1</span><br><span class="line">export PATH=$PATH:$HADOOP_PREFIX/bin</span><br><span class="line">export PATH=$PATH:$HADOOP_PREFIX/sbin</span><br><span class="line">export HADOOP_MAPRED_HOME=$&#123;HADOOP_PREFIX&#125;</span><br><span class="line">export HADOOP_COMMON_HOME=$&#123;HADOOP_PREFIX&#125;</span><br><span class="line">export HADOOP_HDFS_HOME=$&#123;HADOOP_PREFIX&#125;</span><br><span class="line">export YARN_HOME=$&#123;HADOOP_PREFIX&#125;</span><br><span class="line">export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_PREFIX/lib/native</span><br><span class="line">export HADOOP_OPTS=&quot;-Djava.library.path=$HADOOP_PREFIX/lib&quot;</span><br></pre></td></tr></table></figure>
+<p>After above step, please restarts the terminal so that all the environment variables will come into effect. </p>
+<p><strong>3.2. Edit hadoop-env.sh</strong></p>
+<p><code>hadoop-env.sh</code> is located in <code>etc/hadoop</code> inside Hadoop Installation directory. Edit <code>hadoop-env.sh</code> and set JAVA_HOME. </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle/</span><br></pre></td></tr></table></figure>
+<p><strong>3.3. Edit core-site.xml</strong></p>
+<p><code>core-site.xml</code> is located in <code>etc/hadoop</code> inside Hadoop installation directory. Edit <code>core-site.xml</code> and add following entries:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;hdfs://localhost:9000&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;$HOME/hdata&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>3.4. Edit  hdfs-site.xml</strong></p>
+<p><code>hdfs-site.xml</code> is located in <code>etc/hadoop</code> inside Hadoop installation directory. Edit <code>core-site.xml</code> and add following entries:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;dfs.replication&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;1&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>3.5. Edit mapred-site.xml</strong></p>
+<p><code>mapred-site.xml</code> is located in <code>etc/hadoop</code> inside Hadoop installation directory. Edit <code>marred-site.xml</code> and add following entries:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;mapreduce.framework.name&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;yarn&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>3.6. Edit yarn-site.xml</strong></p>
+<p><code>yarn-site.xml</code> is located in <code>etc/hadoop</code> inside Hadoop installation directory. Edit <code>yarn-site.xml</code> and add following entries:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;mapreduce_shuffle&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>3.7. Format the name node</strong></p>
+<p>Namenode should be fromatted just once when you install Hadoop. Format the namenode by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./bin/hdfs namenode -format</span><br></pre></td></tr></table></figure>
+<p><strong>3.8. Strat HDFS Services</strong></p>
+<p>Start the HDFS services by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./sbin/start-dfs.sh</span><br></pre></td></tr></table></figure>
+<p><strong>3.9. Start YARN Services</strong></p>
+<p>Start the YARN services by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./sbin/start-yarn.sh</span><br></pre></td></tr></table></figure>
+<p><strong>3.10. Check whether services have been started</strong></p>
+<p>Check whether services have been started by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jps</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">8085 ResourceManager</span><br><span class="line">6616 DataNode</span><br><span class="line">6457 NameNode</span><br><span class="line">8238 NodeManager</span><br><span class="line">8767 Jps</span><br></pre></td></tr></table></figure>
+<p>If you don’t see any of the processes above. the cluster could be down. In this case, birng it up with <code>/sbin/start-all.sh</code>.</p>
+<p><strong>3.11. Run word count example</strong></p>
+<p><a href="http://www.science.smith.edu/dftwiki/index.php/Hadoop_Tutorial_1_--_Running_WordCount" target="_blank" rel="noopener">Hadoop Tutorial 1 – Running WordCount</a>. You can ignore this step. </p>
+<p><strong>3.12 Stop HDFS and YARN services</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./sbin/stop-dfs.sh</span><br><span class="line">$ ./sbin/stop-yarn.sh</span><br></pre></td></tr></table></figure>
+<p>For completeness, you should know that the command for taking the cluster down in <code>./sbin/stop-all.sh</code></p>
+<p>HDFS: <a href="http://localhost:50070" target="_blank" rel="noopener">http://localhost:50070</a>  </p>
+<p>MR： <a href="http://localhost:8088" target="_blank" rel="noopener">http://localhost:8088</a> </p>
+<h1 id="4-Install-Spark-2-11-7-on-Ubuntu"><a href="#4-Install-Spark-2-11-7-on-Ubuntu" class="headerlink" title="4. Install Spark 2.11.7 on Ubuntu"></a>4. Install Spark 2.11.7 on Ubuntu</h1><p>Download and install  Spark 2.11.7 from repository using the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget www.scala-lang.org/files/archive/scala-2.11.7.deb</span><br><span class="line">$ sudo dpkg -i scala-2.11.7.deb</span><br></pre></td></tr></table></figure>
+<p>Edit the <code>~/.bashrc</code> , add the following line:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export SPARK_PREFIX=$HOME/spark-2.0.0-bin-hadoop2.7</span><br><span class="line">export PATH=$PATH:$&#123;SPARK_PREFIX&#125;/bin</span><br></pre></td></tr></table></figure>
+<p>Set up Spark on Python</p>
+<p>Edit the<code>/etc/profile</code>, add the following line at the end.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PYTHONPATH=$HOME/caffe_hadoop_spark/spark-2.0.0-bin-hadoop2.7/python:/usr/bin/python:$PYTHONPATH</span><br></pre></td></tr></table></figure>
+<p>Cop the <code>~/spark-2.0.0-bin-hadoop2.7/python/lib/py4j-0.10.1-src.zip</code> to <code>~/spark-2.0.0-bin-hadoop2.7/python/py4j-0.10.1-src.zip</code>, and unzip <code>python/py4j-0.10.1-src.zip</code></p>
+<p>Check whether the <code>pyspark</code> can be import by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python</span><br><span class="line">import pyspark</span><br></pre></td></tr></table></figure>
+<p>Start eh Spark services by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`~/spark-2.0.0-bin-hadoop2.7/sbin/start-all</span><br></pre></td></tr></table></figure>
+<p><a href="http://localhost:8080/" target="_blank" rel="noopener">http://localhost:8080/</a></p>
+<h2 id="5-Intall-caffe-Dependences-on-Ubuntu-16-04"><a href="#5-Intall-caffe-Dependences-on-Ubuntu-16-04" class="headerlink" title="5. Intall caffe Dependences on Ubuntu 16.04"></a>5. Intall caffe Dependences on Ubuntu 16.04</h2><p><strong>5.1. Install Caffe general dependencies</strong></p>
+<p>First, install libleveldb, opencv etc. You can install this dependencies by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev</span><br><span class="line">$ sudo apt-get install --no-install-recommends libboost-all-dev</span><br></pre></td></tr></table></figure>
+<p><strong>5.2. Install CUDA 9.0</strong></p>
+<p>Installing CUDA 9.0 from runfile is much simpler and smoother than installing the NVDIA driver. The CUDA 9.0 runfile installer for Ubuntu 16.04  can be downloaded form <a href="https://developer.download.nvidia.com/compute/cuda/9.0/secure/Prod/local_installers/cuda_9.0.176_384.81_linux.run?_0G6WaINMPpo6onc7ksI5U7w6QKY9BI96y3iHyjggfaeKVZ2l_69o9Jxky9FKZlxZdOEpvNtaCajd5-a1G68CRrU8Z_FA2_Vh-2c62zEINfxgC3OLqyCXr9iZoUfJtUQQlEl4-Emc9pItrwLzzbaPcKmVWGSaLbGadCtsRGu5VT4V4IAarxbXLR4" target="_blank" rel="noopener">NVDIA</a>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x cuda_9.0.176_384.81_linux.run</span><br><span class="line">$ sudo sh cuda_9.0.176_384.81_linux.run</span><br></pre></td></tr></table></figure>
+<p>Please follow the command-line prompts.</p>
+<p><strong>5.3. Install BLAS</strong></p>
+<p>Basic Linear Algebra Subprograms (<strong>BLAS</strong>) is a specification that prescribes a set of low-level routines for performing common linear algebra operations such as vector addition, scalar multiplication, dot products, linear combinations, and matrix multiplication. <a href="https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms" target="_blank" rel="noopener">Wikipedia</a> </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install libatlas-base-dev</span><br></pre></td></tr></table></figure>
+<p><strong>5.4. Install Python and Dependences</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install python-dev</span><br><span class="line">$ sudo apt-get install python-pip</span><br><span class="line">$ sudo pip install Cython&gt;=0.19.2</span><br><span class="line">$ sudo pip install numpy&gt;=1.7.1</span><br><span class="line">$ sudo pip install scipy&gt;=0.13.2</span><br><span class="line">$ sudo pip install scikit-image&gt;=0.9.3</span><br><span class="line">$ sudo pip install matplotlib&gt;=1.3.1</span><br><span class="line">$ sudo pip install ipython&gt;=3.0.0</span><br><span class="line">$ sudo pip install h5py&gt;=2.2.0</span><br><span class="line">$ sudo pip install leveldb&gt;=0.191</span><br><span class="line">$ sudo pip install networkx&gt;=1.8.1</span><br><span class="line">$ sudo pip install nose&gt;=1.3.0</span><br><span class="line">$ sudo pip install pandas&gt;=0.12.0</span><br><span class="line">$ sudo pip install python-dateutil&gt;=1.4,&lt;2</span><br><span class="line">$ sudo pip install protobuf&gt;=2.5.0</span><br><span class="line">$ sudo pip install python-gflags&gt;=2.0</span><br><span class="line">$ sudo pip install pyyaml&gt;=3.10</span><br><span class="line">$ sudo pip install Pillow&gt;=2.3.0</span><br><span class="line">$ sudo pip install six&gt;=1.1.0</span><br></pre></td></tr></table></figure>
+<h1 id="6-Install-CaffeOnSpark"><a href="#6-Install-CaffeOnSpark" class="headerlink" title="6. Install CaffeOnSpark"></a>6. Install CaffeOnSpark</h1><p>CaffeonSpark is a open source deep learning framework. It was develped by Yahoo for large-scale distribute deep learning on Hadoop and Spark clusters in Yahoo’s private cloud. </p>
+<p>CaffeOnSpark brings  deep learning framework <a href="https://github.com/BVLC/caffe" target="_blank" rel="noopener">Caffe</a> to Spark and Hadoop . It enables distributed deep learning on a cluster of CPU and GPU servers. CaffeOnSpark was been in use by Yahoo for image search, content classification and serveral other use cases. </p>
+<p><strong>6.1. Install maven-3.2.5</strong></p>
+<p>Download and Uzip Apache Maven 3.25 binary from repository using the following command：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget http://mirrors.sonic.net/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz</span><br><span class="line">$ tar -zxf apache-maven-3.2.5-bin.tar.gz</span><br></pre></td></tr></table></figure>
+<p>Move  the application directory to <code>/usr/local</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo cp -R apache-maven-3.2.5 /usr/local</span><br></pre></td></tr></table></figure>
+<p>Make a soft link in <code>/usr/bin</code> for universal access of <code>mvn</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo ln -s /usr/local/apache-maven-3.2.5/bin/mvn /usr/bin/mvn</span><br></pre></td></tr></table></figure>
+<p>Verifify <code>mvn</code> installation</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mvn --version</span><br></pre></td></tr></table></figure>
+<p><strong>6.2. Install scala-2.11.7 </strong></p>
+<p>Install the scala-2.11.7 by executing the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget www.scala-lang.org/files/archive/scala-2.11.7.deb</span><br><span class="line">$ sudo dpkg -i scala-2.11.7.deb</span><br></pre></td></tr></table></figure>
+<p><strong>6.3. Install protobuf-2.5.0 </strong></p>
+<p>Download the protobuf 2.5.0 source code form the repository by executing the follow command:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz</span><br></pre></td></tr></table></figure>
+<p>Unzip the binary with tar</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ tar xvf protobuf-2.5.0.tar.gz</span><br></pre></td></tr></table></figure>
+<p>Configure and install.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cd protobuf-2.5.0</span><br><span class="line">$ ./autogen.sh</span><br><span class="line">$ ./configure</span><br><span class="line">$ make</span><br><span class="line">$ make install</span><br></pre></td></tr></table></figure>
+<p>Verify protobuf installation</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ protoc --version</span><br></pre></td></tr></table></figure>
+<p><strong>6.4. Configure the Caffe</strong></p>
+<p>Add the <code>/usr/include/hdf5/serial</code> to <code>caffe-public/Makefile.config</code>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial</span><br></pre></td></tr></table></figure>
+<p>Add the <code>hdf5_serial_hl</code>, <code>hdf5_serial</code> and <code>opencv library</code>  to  <code>caffe-public/Makefile</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_serial_hl hdf5_serial opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs</span><br></pre></td></tr></table></figure>
+<p><strong>6.5. Install CaffeOnSpark</strong></p>
+<p>Clone CaffeOnSpark code. Adjust <code>Makefile.config</code> and <code>Makefile</code> according <code>7.3</code>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/yahoo/CaffeOnSpark.git --recursive</span><br><span class="line">cd CaffeOnSpark/caffe-public/</span><br><span class="line">cp Makefile.config.example Makefile.config</span><br><span class="line">echo &quot;INCLUDE_DIRS += $&#123;JAVA_HOME&#125;/include&quot; &gt;&gt; Makefile.config</span><br><span class="line">cd .. </span><br><span class="line">make build</span><br></pre></td></tr></table></figure>
+<h1 id="7-Conclution"><a href="#7-Conclution" class="headerlink" title="7. Conclution"></a>7. Conclution</h1><p>This is was all on the tutorial to install CaffeOnSpark on Ubuntu 16.04 in 30 minutes. For any queries on How to install CaffeOnSpark fell free to ask the question in the comment section below. I would also like to know you feedback on install CaffeOnSpark on Ubuntu turorial. </p>
+<h2 id="8-Errors-and-Solution"><a href="#8-Errors-and-Solution" class="headerlink" title="8. Errors and Solution"></a>8. Errors and Solution</h2><p><strong>8.1.  src/caffe/net.cppp:8:18: fatal error: hdf5.h: No such file or directory.</strong></p>
+<p>Solution:</p>
+<ol>
+<li><p>Add the <code>/usr/include/hdf5/serial</code> to <code>caffe-public/Makefile.config</code>.</p>
+<p>Change</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include</span><br></pre></td></tr></table></figure>
+<p>​    To</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Modify the <code>caffe-public/Makefile</code></li>
+</ol>
+<p>Change</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_hl hdf5</span><br></pre></td></tr></table></figure>
+<p>To</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_serial_hl hdf5_serial</span><br></pre></td></tr></table></figure>
+<p>or Modify the <code>caffe-public/Makefile</code></p>
+<ol start="3">
+<li>The lib names of hdf5 on Ubuntu have a postfix “serial”, therefore <code>-lhdf5</code> and  <code>-lhdf5_hl</code> cannot be found. To solve it, I created two symbolics:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial.so.10 /usr/lib/x86_64-linux-gnu/libhdf5.so</span><br><span class="line">$ sudo ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial_hl.so.10 /usr/lib/x86_64-linux-gnu/libhdf5_hl.so</span><br></pre></td></tr></table></figure>
+<p><strong>8.2. build_release/lib/libcaffe.so: undefined reference to `cv::imread(cv::String const&amp;, int)’</strong></p>
+<p>Solution：</p>
+<p>Modify the <code>caffe-public/Makefile</code></p>
+<p>Change</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_serial_hl hdf5_serial</span><br></pre></td></tr></table></figure>
+<p>To</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_serial_hl hdf5_serial opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs</span><br></pre></td></tr></table></figure>
+<p><strong>8.3. /bin/sh: 1: mvn: not found</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install maven</span><br></pre></td></tr></table></figure>
+<p><strong>8.4. cannot find symbol symbol:   class GeneratedMessageV3</strong></p>
+<p>Must install <code>protobuf 2.5.0</code></p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="https://github.com/yahoo/CaffeOnSpark/wiki/build" target="_blank" rel="noopener">https://github.com/yahoo/CaffeOnSpark/wiki/build</a></p>
+<p><a href="https://data-flair.training/blogs/install-hadoop-2-7-on-ubuntu/" target="_blank" rel="noopener">https://data-flair.training/blogs/install-hadoop-2-7-on-ubuntu/</a> </p>
+<p><a href="http://basicgroundwork.blogspot.com/2014/07/installing-maven-322-on-ubuntu-1404.html" target="_blank" rel="noopener">http://basicgroundwork.blogspot.com/2014/07/installing-maven-322-on-ubuntu-1404.html</a></p>
+<p><a href="https://stackoverflow.com/questions/29797763/how-do-i-install-protobuf-2-5-on-arch-linux-for-compiling-hadoop-2-6-0-using-mav" target="_blank" rel="noopener">https://stackoverflow.com/questions/29797763/how-do-i-install-protobuf-2-5-on-arch-linux-for-compiling-hadoop-2-6-0-using-mav</a></p>
+<p><a href="https://blog.csdn.net/zhengshidao/article/details/78340730" target="_blank" rel="noopener">https://blog.csdn.net/zhengshidao/article/details/78340730</a> </p>
+<p><a href="http://basicgroundwork.blogspot.com/2014/07/installing-maven-322-on-ubuntu-1404.html" target="_blank" rel="noopener">http://basicgroundwork.blogspot.com/2014/07/installing-maven-322-on-ubuntu-1404.html</a></p>
+<p><a href="https://blog.csdn.net/zhengshidao/article/details/78477906" target="_blank" rel="noopener">https://blog.csdn.net/zhengshidao/article/details/78477906</a></p>
+<p><a href="https://blog.csdn.net/sadonmyown/article/details/72782422" target="_blank" rel="noopener">https://blog.csdn.net/sadonmyown/article/details/72782422</a></p>
+<p><a href="https://blog.csdn.net/zhengshidao/article/details/78477906" target="_blank" rel="noopener">https://blog.csdn.net/zhengshidao/article/details/78477906</a></p>
 
           
         
