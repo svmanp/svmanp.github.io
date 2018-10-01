@@ -379,7 +379,7 @@
 <p>Copy the path from your preferred installation and then open <code>/etc/environment</code> using <code>vim</code> or your favorite text editor.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vim /etc/environment</span><br></pre></td></tr></table></figure>
 <p>At the end of this file, add the following line, making sure to replace the highlighted path with your own copied path.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ JAVA_HOME=&quot;/usr/lib/jvm/java-8-oracle&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_HOME=&quot;/usr/lib/jvm/java-8-oracle&quot;</span><br></pre></td></tr></table></figure>
 <p>Save and exit the file, and reload it.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source /etc/environment</span><br></pre></td></tr></table></figure>
 <p>You can now test whether the environment variable has been set by executing the following command:</p>
@@ -437,18 +437,18 @@
 <p>For completeness, you should know that the command for taking the cluster down in <code>./sbin/stop-all.sh</code></p>
 <p>HDFS: <a href="http://localhost:50070" target="_blank" rel="noopener">http://localhost:50070</a>  </p>
 <p>MR： <a href="http://localhost:8088" target="_blank" rel="noopener">http://localhost:8088</a> </p>
-<h1 id="4-Install-Spark-2-11-7-on-Ubuntu"><a href="#4-Install-Spark-2-11-7-on-Ubuntu" class="headerlink" title="4. Install Spark 2.11.7 on Ubuntu"></a>4. Install Spark 2.11.7 on Ubuntu</h1><p>Download and install  Spark 2.11.7 from repository using the following command:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget www.scala-lang.org/files/archive/scala-2.11.7.deb</span><br><span class="line">$ sudo dpkg -i scala-2.11.7.deb</span><br></pre></td></tr></table></figure>
+<h1 id="4-Install-Spark-2-0-on-Ubuntu"><a href="#4-Install-Spark-2-0-on-Ubuntu" class="headerlink" title="4. Install Spark 2.0 on Ubuntu"></a>4. Install Spark 2.0 on Ubuntu</h1><p>Download and install  Spark 2.0 from repository using the following command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz</span><br><span class="line">$ tar -xzf spark-2.0.0-bin-hadoop2.7.tgz</span><br></pre></td></tr></table></figure>
 <p>Edit the <code>~/.bashrc</code> , add the following line:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export SPARK_PREFIX=$HOME/spark-2.0.0-bin-hadoop2.7</span><br><span class="line">export PATH=$PATH:$&#123;SPARK_PREFIX&#125;/bin</span><br></pre></td></tr></table></figure>
 <p>Set up Spark on Python</p>
 <p>Edit the<code>/etc/profile</code>, add the following line at the end.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PYTHONPATH=$HOME/caffe_hadoop_spark/spark-2.0.0-bin-hadoop2.7/python:/usr/bin/python:$PYTHONPATH</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PYTHONPATH=$HOME/spark-2.0.0-bin-hadoop2.7/python:/usr/bin/python:$PYTHONPATH</span><br></pre></td></tr></table></figure>
 <p>Cop the <code>~/spark-2.0.0-bin-hadoop2.7/python/lib/py4j-0.10.1-src.zip</code> to <code>~/spark-2.0.0-bin-hadoop2.7/python/py4j-0.10.1-src.zip</code>, and unzip <code>python/py4j-0.10.1-src.zip</code></p>
 <p>Check whether the <code>pyspark</code> can be import by executing the following command:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python</span><br><span class="line">import pyspark</span><br></pre></td></tr></table></figure>
 <p>Start eh Spark services by executing the following command:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`~/spark-2.0.0-bin-hadoop2.7/sbin/start-all</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`$ ~/spark-2.0.0-bin-hadoop2.7/sbin/start-all</span><br></pre></td></tr></table></figure>
 <p><a href="http://localhost:8080/" target="_blank" rel="noopener">http://localhost:8080/</a></p>
 <h1 id="5-Intall-Caffe-Dependences-on-Ubuntu-16-04"><a href="#5-Intall-Caffe-Dependences-on-Ubuntu-16-04" class="headerlink" title="5. Intall Caffe Dependences on Ubuntu 16.04"></a>5. Intall Caffe Dependences on Ubuntu 16.04</h1><p><strong>5.1. Install Caffe general dependencies</strong></p>
 <p>First, install libleveldb, opencv etc. You can install this dependencies by executing the following command:</p>
